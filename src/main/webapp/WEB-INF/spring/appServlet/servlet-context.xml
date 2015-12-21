@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/mvc"
+	xmlns:task="http://www.springframework.org/schema/task"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.2.xsd">
+
+
+
+
+	<!-- DispatcherServlet Context: defines this servlet's request-processing infrastructure -->
+	
+	<!-- Enables the Spring MVC @Controller programming model -->
+	<annotation-driven />
+
+	<!-- Handles HTTP GET requests for /resources/** by efficiently serving up static resources in the ${webappRoot}/resources directory -->
+	<resources mapping="/images/**" location="/images/" />
+	<resources mapping="/js/**"  location="/js/" />
+	<resources mapping="/media/**"  location="/media/" />
+	<resources mapping="/css/**"  location="/css/" />
+	<resources mapping="/ico/**"  location="/ico/" />
+	<resources mapping="/font/**"  location="/font/" />
+	<resources mapping="/fonts/**"  location="/fonts/" />
+	<resources mapping="/resources/**" location="/resources/" />
+	<resources mapping="/druid/**" location="/druid/" />
+	<resources mapping="/upload/**" location="/upload/" />
+
+	<!-- Resolves views selected for rendering by @Controllers to .jsp resources in the /WEB-INF/views directory -->
+	<beans:bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<beans:property name="prefix" value="/WEB-INF/views/" />
+		<beans:property name="suffix" value=".jsp" />
+		<beans:property name="contentType" value="text/html;charset=UTF-8" />
+	</beans:bean>
+	
+	<beans:bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping">
+	   <beans:property name="interceptors">
+	      <beans:list>
+	          <beans:bean class="com.hsae.ims.interceptor.AvoidDuplicateSubmissionInterceptor"/>
+	      </beans:list>
+	   </beans:property>
+	</beans:bean>
+	<!-- 表单重复提交 -->
+	<mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/workflow/reimburse/*,/workflow/dayoff/*"/>
+            <beans:bean class="com.hsae.ims.interceptor.AvoidDuplicateSubmissionInterceptor"></beans:bean>
+        </mvc:interceptor>
+    </mvc:interceptors>
+	
+	<context:component-scan base-package="com.hsae.ims.controller" />
+	<!-- task任务扫描注解 -->
+	<task:annotation-driven/>
+	
+	<context:component-scan base-package="com.hsae.ims.controller,com.hsae.ims.task,com.hsae.ims.view" />
+	
+</beans:beans>

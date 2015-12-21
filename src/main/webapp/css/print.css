@@ -1,0 +1,30 @@
+#header, .top_title, #jqprint, #footer, #cssprint h3 {
+	display: none !important
+}
+
+table {
+	font-size: 10px;
+}
+
+.table td, .table th {
+		border: 1px solid #707070 !important;
+	border-top: 1px solid #707070 !important;
+	border-bottom: 1px solid #707070 !important;
+	border-left: 1px solid #707070 !important;
+}
+
+.head-title {
+	font-size: 17.5px;
+	font-weight: normal;
+	line-height: normal;
+	margin-top: 0px;
+	text-align: center;
+	margin: 10px 0;
+	display: block;
+	color: inherit;
+	margin: 10px 0;
+	font-family: inherit;
+}
+.print-div{
+	width: 200mm; border: 1px solid #707070; margin-top: 50px;
+}

@@ -1,0 +1,26 @@
+.ManageList{ float:left; width:99.6%; min-width: 824px;clear:both; height:auto; overflow:hidden;}
+.ManageList .listTitle{ float:left; width:99%; clear:both; height:auto; background-color:#f1f1f1; height:32px; line-height:32px ; }
+.ManageList .listTitle li span{  width: 45px; text-align: center; margin-right:10px; display:block; float:left;}
+.ManageList .title li span{ width: 45px; text-align: center; margin-right:10px; display:block; float:left;}
+.ManageList .title{ float:left; width:99%; clear:both; height:auto; background-color:#f1f1f1; height:32px; line-height:32px ; margin-bottom:15px;}
+.ManageList input[type="checkbox"]{margin-top:0px;}
+.ManageList .title input[type="checkbox"]{margin-top:5px;}
+.ManageList ul{ float:left;clear:both; padding:0px 0px; margin-bottom:5px; }
+.ManageList ul li{ float:left; text-align:left; width:100px; word-break:break-all; padding-left:0px; height:30px; line-height:30px;  padding:0px 5px 0px 5px;}
+.ManageList ul:link{ background:#FBF4E5}
+.ManageList ul:visited{ background:#FBF4E5}
+.ManageList ul:hover{ background:#eff3f4}
+.ManageList ul img{ padding-top:6px;}
+
+.QType{WORD-WRAP: break-word;float:left;width:780px!important;height:auto;margin:0px 10px; background-color:#ffffff;padding:0px 15px; text-align:left;}
+.QType .TypeTitle{float:left;width:100%;height:auto;line-height:34px;color:#417ac1;border:1px #e0e0e0 solid;background-color:#f4fbf8;font-weight:bold;}
+.QType .Body{float:left;width:680px!important;border:1px #c9c9c9 dashed;height:auto;line-height:24px;padding:10px 15px;margin:5px 0px;color:#000000;z-index:1000}
+.QType .BodyMark{float:left;width:680px!important;border:1px #ca0100 dashed;height:auto;line-height:24px;padding:10px 15px;margin:5px 0px;color:#000000;z-index:1000;background-color:#fcebdc;}
+
+.QType  span{color:#ff0000;font-weight:bold;cursor:pointer;}
+.QType .Body .QName{float:left;width:680px!important;border-bottom:1px #c9c9c9 dashed;height:auto;line-height:30px;z-index:999;}
+.QType .Body .QName span{color:#ff0000;font-weight:bold;z-index:10000;}
+.QType .Answer{float:left;width:650px!important;height:auto;line-height:30px;font-weight:bold;font-family:黑体;color:#000000; font-size:12pt;border:1px #dddddd solid;background-color:#f4f4f4;padding:0px 15px;margin-bottom:5px;}
+
+#ExamName { float:left;width:810px;margin:0px 10px;height:60px;line-height:60px;font-family:黑体;font-weight:bold;font-size:20pt;color:#ff0000;text-align:center;background-color:#ffffff;
+}

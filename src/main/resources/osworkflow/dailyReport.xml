@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE workflow PUBLIC "-//OpenSymphony Group//DTD OSWorkflow 2.8//EN" "http://www.opensymphony.com/osworkflow/workflow_2_8.dtd">
+<workflow>
+	<initial-actions>
+		<action id="10" name="开始">
+			<results>
+				<unconditional-result id="90" old-status="Finished"
+					status="Underway" step="1" owner="${creater}" />
+			</results>
+		</action>
+	</initial-actions>
+
+	<steps>
+		<step id="1" name="提交周报">
+			<actions>
+				<action id="11" name="提交审核">
+					<restrict-to>
+						<conditions type="AND">
+							<condition name="allow.owner.only" type="class">
+								<arg name="class.name">com.opensymphony.workflow.util.IsUserOwnerCondition</arg>
+							</condition>
+						</conditions>
+					</restrict-to>
+					
+					<pre-functions>
+						<function type="spring">
+							<arg name="bean.name">getNextOwnerFunction</arg>
+						</function>
+					</pre-functions>
+					<results>
+						<!-- 如果提交人是部门主管，直接跳过第二步 到第三部总共审核 -->
+						<result  id="92" old-status="Finished" status="Queued" step="3" owner="32">
+							<conditions type="AND">
+									<condition name="allow.dept.only" type="spring">
+										<arg name="bean.name">isDeptMangerCondition</arg>
+									</condition>
+								</conditions>
+						</result>
+						
+						<unconditional-result id="91" old-status="Finished" status="Queued" step="2" owner="${nextowner}" />
+						
+						
+						
+					</results>
+					
+				</action>
+			</actions>
+		</step>
+
+
+		<step id="2" name="部门经理审核">
+			<actions>
+				<action id="12" name="审批通过">
+					<restrict-to>
+						<conditions type="AND">
+							<condition name="allow.owner.only" type="class">
+								<arg name="class.name">com.opensymphony.workflow.util.IsUserOwnerCondition</arg>
+							</condition>
+						</conditions>
+					</restrict-to>
+					<results>
+						<unconditional-result id="92" old-status="Finished"
+							status="Queued" step="3" owner="32" />
+					</results>
+				</action>
+				
+				<action id="13" name="退回">
+				<restrict-to>
+						<conditions type="AND">
+							<condition name="allow.owner.only" type="class">
+								<arg name="class.name">com.opensymphony.workflow.util.IsUserOwnerCondition</arg>
+							</condition>
+						</conditions>
+					</restrict-to>
+					<pre-functions>
+						<function type="class">
+							<arg name="class.name">com.opensymphony.workflow.util.MostRecentOwner</arg>
+							<arg name="stepId">1</arg>
+						</function>
+					</pre-functions>
+					<results>
+						<unconditional-result old-status="Finished" id='101'
+							status="Queued" step="1" owner="${mostRecentOwner}" />
+					</results>
+					<post-functions>
+				        <function type="spring">
+							<arg name="bean.name">dailyReportReturnTimesFunction</arg>
+						</function>
+			      </post-functions>
+				</action>
+			</actions>
+		</step>
+		
+		<step id="3" name="总工审核">
+			<actions>
+				<action id="14" name="审批通过">
+					<restrict-to>
+						<conditions type="AND">
+							<condition name="allow.owner.only" type="class">
+								<arg name="class.name">com.opensymphony.workflow.util.IsUserOwnerCondition</arg>
+							</condition>
+						</conditions>
+					</restrict-to>
+					<results>
+						<unconditional-result id="93" old-status="Finished"
+							status="Queued" step="6" />
+					</results>
+				</action>
+				<action id="15" name="退回">
+					<restrict-to>
+						<conditions type="AND">
+							<condition name="allow.owner.only" type="class">
+								<arg name="class.name">com.opensymphony.workflow.util.IsUserOwnerCondition</arg>
+							</condition>
+						</conditions>
+					</restrict-to>
+					<pre-functions>
+						<function type="class">
+							<arg name="class.name">com.opensymphony.workflow.util.MostRecentOwner</arg>
+							<arg name="stepId">2</arg>
+						</function>
+					</pre-functions>
+					<results>
+						<unconditional-result old-status="Finished" id='102'
+							status="Queued" step="1" owner="${creater}" />
+					</results>
+					<post-functions>
+				        <function type="spring">
+							<arg name="bean.name">dailyReportReturnTimesFunction</arg>
+						</function>
+			      </post-functions>
+				</action>
+			</actions>
+		</step>
+		
+		<step id="6" name="结束流程" />
+	</steps>
+</workflow>
+

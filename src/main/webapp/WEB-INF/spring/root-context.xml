@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"  
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"  
+    xmlns:tx="http://www.springframework.org/schema/tx" xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:jpa="http://www.springframework.org/schema/data/jpa" xmlns:util="http://www.springframework.org/schema/util"
+    xmlns:mvc="http://www.springframework.org/schema/mvc" 
+    xsi:schemaLocation="  
+       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd  
+       http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd  
+       http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd  
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa-1.0.xsd
+       http://www.springframework.org/schema/mvc
+	   http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd
+       "> 
+	<!-- Root Context: defines shared resources visible to all other web components -->
+	<context:component-scan base-package="com.osworkflow.function,com.hsae,com.osworkflow.condition" />
+	<bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+    	<property name="locations">
+    	  <list>
+    	    <value>classpath:jdbc.properties</value>
+    	     <value>classpath:cas.properties</value>
+    	  </list>
+    	</property>
+	</bean>
+	
+	<bean id="stcardSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="${stcard.driverClassName}"/>
+        <property name="url" value="${stcard.url}"/>
+        <property name="username" value="${stcard.username}"/>
+        <property name="password" value="${stcard.password}"/>
+	</bean>
+
+	
+	<!-- 数据源配置, 使用DBCP数据库连接池 -->
+    <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource" destroy-method="close">
+        <!-- Connection Info -->
+        <property name="driverClassName" value="${jdbc.driverClassName}"/>
+        <property name="url" value="${jdbc.url}"/>
+        <property name="username" value="${jdbc.username}"/>
+        <property name="password" value="${jdbc.password}"/>
+        <property name="defaultAutoCommit" value="true"/>
+        <property name="filters" value="mergeStat" />
+        <!-- Connection Pooling Info -->
+        <property name="maxActive" value="${dbcp.maxActive}"/>
+        <property name="maxIdle" value="${dbcp.maxIdle}"/>
+        <!-- 连接Idle一个小时后超时 -->
+        <property name="timeBetweenEvictionRunsMillis" value="3600000"/>
+        <property name="minEvictableIdleTimeMillis" value="3600000"/>
+    </bean>
+    
+    <bean id="jdbcTemplateSqlserver" class="org.springframework.jdbc.core.JdbcTemplate" abstract="false" lazy-init="false">
+		<property name="dataSource">
+			<ref bean="stcardSource" />
+		</property>
+	</bean>
+	<bean id="jdbcTemplateMysql" class="org.springframework.jdbc.core.JdbcTemplate" abstract="false" lazy-init="false">
+		<property name="dataSource">
+			<ref bean="dataSource" />
+		</property>
+	</bean>
+    <!-- Jpa Entity Manager 配置 -->
+    <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="jpaVendorAdapter" ref="hibernateJpaVendorAdapter"/>
+        <property name="packagesToScan" value="com.hsae.ims.entity,com.hsae.ims.entity.message"/>
+        <property name="jpaProperties">
+            <props>
+                <prop key="hibernate.dialect">${hibernate.dialect}</prop>
+                <prop key="hibernate.cache.region.factory_class">org.hibernate.cache.ehcache.EhCacheRegionFactory</prop>
+                <prop key="hibernate.ejb.naming_strategy">org.hibernate.cfg.ImprovedNamingStrategy</prop>
+                <prop key="hibernate.hbm2ddl.auto">update</prop> 
+                <prop key="hibernate.show_sql">${hibernate.show_sql}</prop>
+                <prop key="hibernate.format_sql">true</prop>
+            </props>
+        </property>
+    </bean>
+    
+    <bean id="hibernateJpaVendorAdapter" class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter"/>
+    
+    <!-- Spring Data Jpa配置 -->
+    <jpa:repositories base-package="com.hsae.ims.repository" transaction-manager-ref="transactionManager"
+                      entity-manager-factory-ref="entityManagerFactory"/>
+    
+    <tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true" />  
+    
+    <!-- Jpa 事务配置 -->
+    <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+        <property name="entityManagerFactory" ref="entityManagerFactory"/>
+    </bean>
+
+    <tx:advice id="txAdvice" transaction-manager="transactionManager">  
+        <tx:attributes>  
+        	<tx:method name="save*" propagation="REQUIRED" />
+            <tx:method name="create*" propagation="REQUIRED" />
+            <tx:method name="update*" propagation="REQUIRED" />  
+            <tx:method name="delete*" propagation="REQUIRED" />
+            <tx:method name="get*" propagation="REQUIRED" read-only="true" />  
+            <tx:method name="find*" propagation="REQUIRED" read-only="true" />  
+            <tx:method name="*"   read-only="true"  />  
+        </tx:attributes>
+    </tx:advice>
+    
+    <aop:config>  
+        <aop:pointcut id="txPointcut" expression="execution(* com.hsae.ims.service.*.*(..)) or execution(* com.osworkflow.*.*(..)) or execution(* com.hsae.ims.task.*.*(..))" />  
+        <aop:advisor advice-ref="txAdvice" pointcut-ref="txPointcut"/>  
+    </aop:config>
+    
+	<!--     JSON -->
+    <bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
+        <property name="messageConverters">
+            <list>
+                <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+                    <property name="objectMapper" ref="jacksonObjectMapper" />
+                </bean>
+            </list>
+        </property>
+    </bean>
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver"/>  
+    <bean id="jacksonObjectMapper" class="com.hsae.ims.config.JacksonObjectMapper" />
+    <bean id="jacksonSerializationConfig" class="com.fasterxml.jackson.databind.SerializationConfig"
+        factory-bean="jacksonObjectMapper" factory-method="getSerializationConfig" />
+<!-- 
+	 <bean id="handlerExceptionResolver" class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+		<property name="defaultErrorView" value="error" />
+	</bean>
+	 -->  
+	<!-- spring  方法 监控 -->
+	<bean id="druid-stat-interceptor"
+   	 class="com.alibaba.druid.support.spring.stat.DruidStatInterceptor">
+  	</bean>
+
+	<bean id="druid-stat-pointcut" class="org.springframework.aop.support.JdkRegexpMethodPointcut"
+	    scope="prototype">
+	    <property name="patterns">
+	        <list>
+	            <value>com.hsae.ims.controller.*</value>
+	            <value>com.hsae.ims.service.*</value>
+	            <value>com.hsae.ims.task.*</value>
+	        </list>
+	    </property>
+	</bean>
+
+	<aop:config>
+	    <aop:advisor advice-ref="druid-stat-interceptor"
+	        pointcut-ref="druid-stat-pointcut" />
+	</aop:config>
+    <import resource="applicationContext-security.xml" />
+    <import resource="applicationContext-osworkflow.xml" />
+  <!--  	<import resource="applicationContext-job.xml" />--> 
+   	<import resource="applicationContext-activiti.xml" />
+</beans>

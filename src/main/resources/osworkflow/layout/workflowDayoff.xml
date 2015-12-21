@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<layout>
+ <cell id="10" type="InitialActionCell" height="30.0" width="100.0" x="200" y="0"/>
+  
+   <cell id="1" type="StepCell" height="30.0" width="100.0" x="200" y="100"/>
+  
+   <cell id="2" type="StepCell" height="30.0" width="100.0" x="100" y="200.0"/>
+  
+   <cell id="3" type="StepCell" height="30.0" width="100.0" x="200" y="300"/>
+  
+   <cell id="4" type="StepCell" height="30.0" width="100.0" x="100" y="400.0"/>
+  
+  
+   <cell id="6" type="StepCell" height="30.0" width="100.0" x="200" y="600.0"/>
+  
+   <cell id="7" type="StepCell" height="30.0" width="100.0" x="200.0" y="700.0"/>
+   <connector id="25" linewidth="1.0" color="-16777216" labelx="500.0" labely="500.0" from="0" to="0"/>
+   <connector id="101" linewidth="1.0" color="-16777216" labelx="500.0" labely="500.0" from="0" to="0"/>
+      <connector id="102" linewidth="1.0" color="-16777216" labelx="500.0" labely="500.0" from="0" to="0"/>
+     <connector id="201" linewidth="1.0" color="-16777216" labelx="500.0" labely="500.0" from="0" to="0"/>
+
+  <connector id="202" linewidth="1.0" color="-16777216" labelx="500.0" labely="500.0" from="1" to="0"/>
+  
+  <connector id="303" linewidth="1.0" color="-16777216" labelx="16000.0" labely="500.0" from="0" to="0">
+    <routing id="11" x="300" y="200"/>
+  </connector>
+  
+   <connector id="302" linewidth="1.0" color="-16777216" labelx="500.0" labely="500.0" from="0" to="0"/>
+   <connector id="301" linewidth="1.0" color="-16777216" labelx="500.0" labely="500.0" from="0" to="0"/>
+  <connector id="401" linewidth="1.0" color="-16777216" labelx="500.0" labely="500.0" from="0" to="0"/>
+   <connector id="604" linewidth="1.0" color="-16777216" labelx="500.0" labely="500.0" from="0" to="0"/>
+  
+  <connector id="402" linewidth="1.0" color="-16777216" labelx="-800.0" labely="500.0" from="0" to="0">
+    <routing id="12" x="50" y="200"/>
+  </connector>
+
+<connector id="605" linewidth="1.0" color="-16777216" labelx="9500.0" labely="500.0" from="0" to="0">
+
+      <routing id="14" x="400" y="240"/>
+  </connector>
+  
+</layout>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://activiti.org/bpmn20" id="definitions">
+  <process id="trainingplan" name="111" isExecutable="true">
+    <startEvent id="start"></startEvent>
+    <sequenceFlow id="flow1" sourceRef="start" targetRef="teacherSubmit"></sequenceFlow>
+    <userTask id="teacherSubmit" name="讲师提交资料" activiti:assignee="${teacher}">
+      <documentation>讲师提交资料</documentation>
+    </userTask>
+    <sequenceFlow id="flow2" sourceRef="teacherSubmit" targetRef="expertSubmit"></sequenceFlow>
+    <userTask id="expertSubmit" name="审核资料" activiti:assignee="${assignee}">
+      <multiInstanceLoopCharacteristics isSequential="false" activiti:collection="experts" activiti:elementVariable="assignee">
+        <completionCondition>${nrOfCompletedInstances&gt;=2}</completionCondition>
+      </multiInstanceLoopCharacteristics>
+    </userTask>
+    <sequenceFlow id="flow3" sourceRef="expertSubmit" targetRef="theEnd"></sequenceFlow>
+    <endEvent id="theEnd"></endEvent>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_trainingplan">
+    <bpmndi:BPMNPlane bpmnElement="trainingplan" id="BPMNPlane_trainingplan">
+      <bpmndi:BPMNShape bpmnElement="start" id="BPMNShape_start">
+        <omgdc:Bounds height="35.0" width="35.0" x="0.0" y="15.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="teacherSubmit" id="BPMNShape_teacherSubmit">
+        <omgdc:Bounds height="60.0" width="100.0" x="80.0" y="0.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="expertSubmit" id="BPMNShape_expertSubmit">
+        <omgdc:Bounds height="60.0" width="100.0" x="230.0" y="0.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="theEnd" id="BPMNShape_theEnd">
+        <omgdc:Bounds height="35.0" width="35.0" x="390.0" y="15.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="flow1" id="BPMNEdge_flow1">
+        <omgdi:waypoint x="35.0" y="32.0"></omgdi:waypoint>
+        <omgdi:waypoint x="42.0" y="30.0"></omgdi:waypoint>
+        <omgdi:waypoint x="42.0" y="30.0"></omgdi:waypoint>
+        <omgdi:waypoint x="80.0" y="30.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow2" id="BPMNEdge_flow2">
+        <omgdi:waypoint x="180.0" y="30.0"></omgdi:waypoint>
+        <omgdi:waypoint x="192.0" y="30.0"></omgdi:waypoint>
+        <omgdi:waypoint x="192.0" y="30.0"></omgdi:waypoint>
+        <omgdi:waypoint x="230.0" y="30.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow3" id="BPMNEdge_flow3">
+        <omgdi:waypoint x="330.0" y="30.0"></omgdi:waypoint>
+        <omgdi:waypoint x="342.0" y="30.0"></omgdi:waypoint>
+        <omgdi:waypoint x="342.0" y="30.0"></omgdi:waypoint>
+        <omgdi:waypoint x="390.0" y="32.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

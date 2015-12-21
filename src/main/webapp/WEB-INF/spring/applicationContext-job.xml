@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<!-- 总管理类 如果将lazy-init='false'那么容器启动就会执行调度程序 -->
+	<bean name="startQuertz" lazy-init="false" autowire="no"
+		class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<property name="triggers">
+			<list>
+				<ref bean="attenceDataBaseRefreshTodayTrigger" />
+				<ref bean="attenceDataBaseRefreshYesterdayTrigger" />
+				<ref bean="weekReportAutoApproveJobDetailTrigger" />
+				<ref bean="attenceStatisticsSummaryTrigger" />
+				<ref bean="bookAutoSendEmailJobDetailTrigger" />
+				<ref bean="resumeAutoSendEmailJobDetailTrigger" />
+				<ref bean="meetingAutoSendEmailJobDetailTrigger" />
+			</list>
+		</property>
+	</bean>
+	
+	<!-- 刷新当天考勤数据 -->
+	<bean id="attenceDataBaseRefreshTodayTrigger"
+		class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail">
+			<ref bean="attenceDataBaseRefreshTodayJobDetail" />
+		</property>
+		<property name="cronExpression">
+			<!--<value>0 0/1 * * * ?</value> 每分钟执行一次 -->
+			<value>0 2/15 9-12 ? * MON-FRI</value><!-- 工作日每天上午9:00到12点 每15分钟执行一次 -->
+		</property>
+	</bean>
+	<!-- 刷新昨天考勤数据 -->
+	<bean id="attenceDataBaseRefreshYesterdayTrigger"
+		class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail">
+			<ref bean="attenceDataBaseRefreshYesterdayJobDetail" />
+		</property>
+		<property name="cronExpression">
+			
+			<!-- 工作日每天上午9:00到14:00点 每30分钟执行一次 -->
+			<value>0 0/30 9-14 ? * MON-FRI</value>
+		</property>
+	</bean>
+	
+	
+	<bean id="weekReportAutoApproveJobDetailTrigger"
+		class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail">
+			<ref bean="weekReportAutoApproveJobDetail" />
+		</property>
+		<property name="cronExpression">
+			<value>0 15 10 ? * MON-FRI</value>
+		</property>
+	</bean>
+	
+
+	<bean id="attenceStatisticsSummaryTrigger"
+		class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail">
+			<ref bean="attenceStatisticsSummaryJobDetail" />
+		</property>
+		<property name="cronExpression">
+			<value>0 10 9 ? * *</value>  <!-- 每天凌晨1點執行 -->
+		</property>
+	</bean>
+	
+	<bean id="bookAutoSendEmailJobDetailTrigger"
+		class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail">
+			<ref bean="bookAutoSendEmailJobDetail" />
+		</property>
+		<property name="cronExpression">
+			<value>0 0 10 ? * *</value>  <!-- 每天上午10點執行 -->
+		</property>
+	</bean>
+	
+	<bean id="resumeAutoSendEmailJobDetailTrigger"
+		class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail">
+			<ref bean="resumeAutoSendEmailJobDetail" />
+		</property>
+		<property name="cronExpression">
+ 		<!--	<value>0 0/1 * * * ?</value> 每分钟执行一次 -->
+			<value>0 0 9 * * ?</value>  <!--每天上午9點執行 -->
+		</property>
+	</bean>
+	
+	<bean id="meetingAutoSendEmailJobDetailTrigger"
+		class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail">
+			<ref bean="meetingAutoSendEmailJobDetail" />
+		</property>
+		<property name="cronExpression">
+<!-- 		 	每分钟执行一次 -->
+ 			<value>0 0/1 * * * ?</value>
+		</property>
+	</bean>
+
+	<bean id="attenceStatisticsSummaryJobDetail"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="attenceStatisticsJob" />
+		</property>
+		<property name="targetMethod">
+			<value>execute</value>
+		</property>
+	</bean>
+	
+	<bean id="weekReportAutoApproveJobDetail"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="weekReportAutoApproveJob" />
+		</property>
+		<property name="targetMethod">
+			<value>execute</value>
+		</property>
+	</bean>
+	
+	<bean id="attenceDataBaseRefreshTodayJobDetail"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="attenceDataBaseRefreshJob" />
+		</property>
+		<property name="targetMethod">
+			<value>executeToday</value>
+		</property>
+	</bean>
+	<bean id="attenceDataBaseRefreshYesterdayJobDetail"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="attenceDataBaseRefreshJob" />
+		</property>
+		<property name="targetMethod">
+			<value>executeYesterday</value>
+		</property>
+	</bean>
+	
+	<bean id="bookAutoSendEmailJobDetail"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="bookAutoSendEmailJob" />
+		</property>
+		<property name="targetMethod">
+			<value>execute</value>
+		</property>
+	</bean>
+	
+	
+	<bean id="resumeAutoSendEmailJobDetail"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="resumeAutoSendEmailJob" />
+		</property>
+		<property name="targetMethod">
+			<value>execute</value>
+		</property>
+	</bean>
+	
+	<bean id="meetingAutoSendEmailJobDetail"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="meetingAutoSendEmailJob" />
+		</property>
+		<property name="targetMethod">
+			<value>execute</value>
+		</property>
+	</bean>
+	
+</beans>
+

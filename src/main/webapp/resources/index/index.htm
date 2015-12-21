@@ -1,0 +1,240 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="ch">
+<head>
+<link href="./bootstrap-3.3.2/css/bootstrap.css" rel="stylesheet">
+<script src="./bootstrap-3.3.2/js/jquery.js"></script>
+<script src="./bootstrap-3.3.2/js/bootstrap.js"></script>
+<script src="./bootstrap-3.3.2/js/angular.js"></script>
+<!-- <script type="text/javascript" src="../../js/ims/ims.meeting.js"></script> -->
+
+<script type="text/javascript" src="../../js/ims/ims.js"></script>
+<style type="text/css">
+body {
+	background: url(./bootstrap-3.3.2/img/bg.jpg) center 0 no-repeat;
+	background-color: #eeedeb;
+	background-attachment: fixed;
+	padding-top: 10px;
+}
+
+.border-right {
+	border-right: 1px solid #ddd;
+}
+
+footer {
+	padding-top: 40px;
+	padding-bottom: 40px;
+	margin-top: 100px;
+	color: #767676;
+	text-align: center;
+	border-top: 1px solid #e5e5e5;
+}
+
+.link-list a {
+	margin: 0 0.9em;
+}
+.img-responsive, .thumbnail > img, .thumbnail a > img, .carousel-inner > .item > img, .carousel-inner > .item > a > img{
+  height: 180px;
+  
+}
+.block {
+background-color: #fff;
+border: 1px solid #ddd;
+margin-bottom: 10px;
+}
+.memo {
+height: 99px;
+background: url("bootstrap-3.3.2/img/memo.png") no-repeat;
+/* z-index: 1000; */
+padding: 10px 0 0 40px;
+}
+.memo p {
+font-size: 12px;
+color: #666;
+margin-bottom: 5px;
+}
+</style>
+<script type="text/javascript">
+
+	function openwin(id){
+		var high = 500;
+		var width = 500;
+		var top = 200;
+		var left = 500;
+		$("#hf_id").val(id);
+		window.open("newsinfo.jsp","_blank","modal=yes,height="+high+",width="+width+",top="+top+",left="+left+", toolbar=yes, location=yes, directories=no, status=no, menubar=yes, scrollbars=yes, resizable=no, copyhistory=yes");
+	}
+	
+	function opendetails(id){
+		var height = 500;
+		var left = (window.document.body.offsetWidth - 800) / 2;
+		window.open (top.$.ims.getContextPath()+'/meeting/details?rm='+id, '_blank', 
+				"toolbar=yes, location=yes, directories=no, status=no, menubar=yes, scrollbars=yes, resizable=no, copyhistory=yes, width=900, height=" + height + ",left=" + left + ",top=200")
+
+	}
+	
+	$(document).ready(
+			function() {
+				/**浜哄憳淇℃伅*/
+				$.ajax({
+					type : "GET",
+					url : top.$.ims.getContextPath() + "/getUser",
+					dataType : "json",
+					success : function(result) {
+						$("#username").html(result.datas.chinesename);
+						$("#position").html(result.datas.position);
+					}
+				});
+				/**璁哄潧*/
+			   $.ajax({
+					type : "GET",
+					url : top.$.ims.getContextPath() + "/getRemoteNews/2",
+					dataType : "json",
+					success : function(result) {
+						$("#bbs_ul").empty();
+						$.each(result.news, function(i, n) {
+							if (i <= 8) {
+								$("#bbs_ul").append(
+										"<li><a href='"+n.url+"' target='_blank'>" + n.title + "</a></li>");
+							}
+						});
+					}
+				});
+				/**寰呭姙*/
+			   $.ajax({
+					type : "GET",
+					url :  top.$.ims.getContextPath()+ "/getTodoList",
+					dataType : "json",
+					success : function(result) {
+						$("#todo_ul").empty();
+						var length = result.datas.length;
+						$.each(result.datas, function(i, n) {
+							var name=n.wfentry.name+" "+(n.wfentry.wfentryExtend.creater.chinesename==null?" ":n.wfentry.wfentryExtend.creater.chinesename)+" "+n.startDate;
+								$("#todo_ul").append(
+										"<li class=\"list-group-item\"><img src='./bootstrap-3.3.2/img/next.gif'></img>&nbsp;&nbsp;<a href='/ims/workflow/toapprove/goApprove/"+n.wfentry.id+"' target='_parent'>" +  name+ "</a></li>");
+						});
+			   			if (length < 5) {
+							var num = 5 - length;
+							for(var i=0;i<num;i++){
+					   			$("#todo_ul").append("<li class='list-group-item'>&nbsp;</li>");
+							}
+						}
+					}
+				});
+				/**璁哄潧鍥剧墖杞崲*/
+			   $.ajax({
+					type : "GET",
+					url : top.$.ims.getContextPath() + "/getRemoteImages/2",
+					dataType : "json",
+					success : function(result) {
+						$("#bbs_images").empty();
+						$.each(result.news, function(i, n) {
+							$("#bbs_images").append(
+									 "<div class=\"item \"> "+
+									 "<a href=\""+n.url+"\" target=_blank><img src=\""+n.imagesrc+"\" ></a>"+
+									 "</div>");
+						});
+						
+						$("#bbs_images .item").eq(1).addClass("active");
+					}
+				});
+			   /**娑堟伅鍏憡**/
+			   $.ajax({
+					type : "GET",
+					url : top.$.ims.getContextPath() + "/sysconfig/news/home/list",
+					dataType : "json",
+					success : function(result) {
+						$("#news_ul").empty();
+						var length = result.length;
+						$.each(result, function(i, n) {
+							if (n.newnews == 0) {
+								$("#news_ul").append("<li class=\"list-group-item\"><img src='./bootstrap-3.3.2/img/file.gif'></img>&nbsp;&nbsp;<a onclick='openwin("+n.id+")'  target='_parent'>" + n.title + "</a></li>");
+							}else{
+								$("#news_ul").append("<li class=\"list-group-item\"><img src='./bootstrap-3.3.2/img/file.gif'></img>&nbsp;&nbsp;<a onclick='openwin("+n.id+")' target='_parent' style='font-weight:bold'>" + n.title + "</a><img src='./bootstrap-3.3.2/img/new.gif'></img></li>");
+							}
+						});
+			   			if (length < 5) {
+							var num = 5 - length;
+							for(var i=0;i<num;i++){
+					   			$("#news_ul").append("<li class='list-group-item'>&nbsp;</li>");
+							}
+						}
+					}
+				});
+			   /** 我召集的会议**/
+			   $.ajax({
+					type : "GET",
+					url : top.$.ims.getContextPath() + "/meeting/allpersonal",
+					dataType : "json",
+					success : function(result) {
+						$("#meeting_ul").empty();
+						var length = result.length;
+						$.each(result, function(i, n) {
+							if (i < 5) {
+// 								var uri = top.$.ims.getContextPath() + "/meeting/personalcall";
+								$("#meeting_ul").append("<li class=\"list-group-item\"><img src='./bootstrap-3.3.2/img/file.gif'></img>&nbsp;&nbsp;<a onclick='opendetails("+n.id+")'  target='_parent'>" + n.meetingName + " "+n.compereName+" "+n.meetingStartDate+"</a></li>");
+							
+								
+
+							}
+							
+						});
+			   			if (length < 5) {
+							var num = 5 - length;
+							for(var i=0;i<num;i++){
+					   			$("#meeting_ul").append("<li class='list-group-item'>&nbsp;</li>");
+							}
+						}
+					}
+				});
+			   /**鏈�柊鍥句功**/
+			   $.ajax({
+					type : "GET",
+					url : top.$.ims.getContextPath() + "/book/booklist",
+					dataType : "json",
+					success : function(result) {
+						$("#book_ul").empty();
+						var length = result.length;
+						$.each(result, function(i, n) {
+							if(i < 5){
+								var uri = top.$.ims.getContextPath() + "/book/lendrecord";
+								$("#book_ul").append("<li class=\"list-group-item\"><img src='./bootstrap-3.3.2/img/file.gif'></img>&nbsp;&nbsp;<a href='"+uri+"'  target='_parent'>" + n.bookName + "</a></li>");
+							}
+						});
+			   			if (length < 5) {
+							var num = 5 - length;
+							for(var i=0;i<num;i++){
+					   			$("#book_ul").append("<li class='list-group-item'>&nbsp;</li>");
+							}
+						}
+					}
+				});
+			});
+</script>
+</head>
+<body ng-app>
+	<input type="hidden" id="hf_id" />
+	<!--  <header ng-include="'nav-bar.htm'"> </header> -->
+	<!--  <div ng-include="'nav-menu.htm'" class="container"></div> -->
+	<div ng-include="'control-panel.htm'" class="container-fluid"></div>
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-md-6" ng-include="'todo.htm'"></div>
+			<div class="col-md-6" ng-include="'cabinet.htm'"></div>
+		</div>
+	</div>
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-md-6" ng-include="'meetings.htm'"></div>
+			<div class="col-md-6" ng-include="'news.htm'"></div>
+		</div>
+	</div>
+	<div ng-include="'bbs.htm'" class="container-fluid"></div>
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-md-6" ng-include="'task.htm'"></div>
+			<div class="col-md-6" ng-include="'books.htm'"></div>
+		</div>
+	</div>
+</body>
+</html>
+

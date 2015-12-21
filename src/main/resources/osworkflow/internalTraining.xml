@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE workflow PUBLIC "-//OpenSymphony Group//DTD OSWorkflow 2.8//EN" "http://www.opensymphony.com/osworkflow/workflow_2_8.dtd">
+<workflow>
+  <initial-actions>
+    <action id="10" name="开始">
+      <results>
+        <unconditional-result id="90" old-status="Finished" status="Underway" step="1" owner="${creater}"/>
+      </results>
+    </action>
+  </initial-actions>
+  
+  <steps>
+   <step id="1" name="发起内部培训">
+      <actions>
+        <action id="11" name="提交专家审核" >
+	          <results>
+	        	  <unconditional-result old-status="Finished" status="Queued" split="1" owner="${nextOwner}"/>  
+	          </results>
+        </action>
+      </actions>
+    </step>
+    
+    <step id="2" name="专家评审">
+      <actions>
+        <action id="21" name="评审通过" >
+	          <results>
+	             <unconditional-result old-status="Finished" status="Queued" join="1"/> 
+	          </results>
+        </action>
+      </actions>
+    </step>
+  <step id="6" name="结束流程"/>
+  </steps>
+  
+   <splits>  
+	    <split id="1" dynamic="TRUE" obtain-groups-callback="com.osworkflow.function.DynamicSplitGroup">
+	      <unconditional-result old-status="Finished" status="Queued" step="2"/>  
+	    </split>  
+  </splits>  
+  
+    <joins>  
+	    <join id="1">  
+       		 <conditions type="AND">
+                     <condition type="spring"><!--判断是否要合并-->
+                          <arg name="bean.name">internalTranJoinedCondition</arg>
+                     </condition>
+             </conditions>
+	      <unconditional-result old-status="Finished" status="Underway" step="6"/>  
+	    </join>  
+  </joins> 
+</workflow>
+

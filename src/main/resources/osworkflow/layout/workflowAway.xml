@@ -1,0 +1,13 @@
+<layout>
+ <cell id="10" type="InitialActionCell" height="30.0" width="100.0" x="200" y="0"/>
+   <cell id="1" type="StepCell" height="30.0" width="100.0" x="200" y="100"/>
+   <cell id="2" type="StepCell" height="30.0" width="100.0" x="200" y="200.0"/>
+   <cell id="3" type="StepCell" height="30.0" width="100.0" x="200" y="300"/>
+   <cell id="4" type="StepCell" height="30.0" width="100.0" x="200.0" y="400.0"/>
+  
+   <connector id="25" linewidth="1.0" color="-16777216" labelx="500.0" labely="500.0" from="0" to="0"/>
+   <connector id="101" linewidth="1.0" color="-16777216" labelx="500.0" labely="500.0" from="8" to="0"/>
+   <connector id="201" linewidth="1.0" color="-16777216" labelx="500.0" labely="500.0" from="0" to="0"/>
+  <connector id="202" linewidth="1.0" color="-16777216" labelx="500.0" labely="500.0" from="1" to="0"/>
+  <connector id="301" linewidth="1.0" color="-16777216" labelx="500.0" labely="500.0" from="7" to="0"/>
+</layout>

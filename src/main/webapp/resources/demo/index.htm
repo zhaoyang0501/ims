@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>个人门户</title>
+
+<link href="./bootstrap-3.3.2/css/bootstrap.css" rel="stylesheet">
+
+<script src="http://cdn.bootcss.com/jquery/2.1.3/jquery.js"></script>
+
+<script src="http://cdn.bootcss.com/bootstrap/3.3.2/js/bootstrap.js"></script>
+
+<script src="http://cdn.bootcss.com/angular.js/1.3.8/angular.js"></script>
+<style type="text/css">
+body {
+	background: url(http://uc-vs.bdimg.com/v4/20150205x1/asset/home/css/img/bg.jpg) center 0 no-repeat;
+	background-color: #eeedeb;
+	background-attachment: fixed;
+ 	padding-top: 10px;
+}
+
+.border-right {
+	border-right: 1px solid #ddd;
+}
+
+footer {
+	padding-top: 40px;
+	padding-bottom: 40px;
+	margin-top: 100px;
+	color: #767676;
+	text-align: center;
+	border-top: 1px solid #e5e5e5;
+}
+
+.link-list a {
+	margin: 0 0.9em;
+}
+</style>
+</head>
+<body ng-app>
+<!--  <header ng-include="'nav-bar.htm'"> </header> -->
+<!--  <div ng-include="'nav-menu.htm'" class="container"></div> -->
+ <div ng-include="'control-panel.htm'" class="container-fluid"></div>
+
+ <div ng-include="'bbs.htm'" class="container-fluid"></div>
+
+ <div class="container-fluid">
+  <div class="row">
+   <div class="col-md-6" ng-include="'todo.htm'"></div>
+   <div class="col-md-6" ng-include="'training.htm'"></div>
+  </div>
+ </div>
+</body>
+</html>
+

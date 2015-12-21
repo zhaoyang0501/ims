@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE workflow PUBLIC "-//OpenSymphony Group//DTD OSWorkflow 2.8//EN" "http://www.opensymphony.com/osworkflow/workflow_2_8.dtd">
+<workflow>
+	<initial-actions>
+		<action id="10" name="开始">
+			<results>
+				<unconditional-result id="90" old-status="Finished"
+					status="Underway" step="1" owner="${creater}" />
+			</results>
+		</action>
+	</initial-actions>
+
+	<steps>
+		<step id="1" name="发起培训需求收集">
+			<actions>
+				<action id="11" name="发起流程">
+					<restrict-to>
+						<conditions type="AND">
+							<condition name="allow.owner.only" type="class">
+								<arg name="class.name">com.opensymphony.workflow.util.IsUserOwnerCondition</arg>
+							</condition>
+						</conditions>
+					</restrict-to>
+					<results>
+						<unconditional-result id="91" old-status="Finished" status="Queued" step="2" owner="${pms}" />
+					</results>
+				</action>
+			</actions>
+		</step>
+
+		<step id="2" name="部门主管收集培训需求">
+			<actions>
+				<action id="12" name="收集完成">
+					<restrict-to>
+						<conditions type="AND">
+							<condition name="allow.owner.only" type="class">
+								<arg name="class.name">com.opensymphony.workflow.util.IsUserOwnerCondition</arg>
+							</condition>
+						</conditions>
+					</restrict-to>
+<!-- 					<restrict-to> -->
+<!-- 						<conditions type="AND"> -->
+<!-- 							<condition type="spring">判断部门主管是否全部提交 -->
+<!-- 								<arg name="bean.name">trainingRequireSubmitCondition</arg> -->
+<!-- 							</condition> -->
+<!-- 							<condition name="allow.owner.only" type="class"> -->
+<!-- 								<arg name="class.name">com.opensymphony.workflow.util.IsUserOwnerCondition</arg> -->
+<!-- 							</condition> -->
+<!-- 						</conditions> -->
+<!-- 					</restrict-to> -->
+					<results>
+						<!-- 到亚莉 -->
+						<unconditional-result id="92" old-status="Finished" status="Queued" step="3" owner="48" />
+					</results>
+				</action>
+			</actions>
+		</step>
+
+		<step id="3" name="初步审查">
+			<actions>
+				<action id="13" name="审查完成">
+					<results>
+						<!-- 到中心领导 -->
+						<unconditional-result id="93" old-status="Finished" status="Queued" step="4" owner="20" />
+					</results>
+				</action>
+			</actions>
+		</step>
+
+		<step id="4" name="中心审核">
+			<actions>
+				<action id="14" name="审批完成">
+					<restrict-to>
+						<conditions type="AND">
+							<condition name="allow.owner.only" type="class">
+								<arg name="class.name">com.opensymphony.workflow.util.IsUserOwnerCondition</arg>
+							</condition>
+						</conditions>
+					</restrict-to>
+					<results>
+						<unconditional-result id="94" old-status="Finished" status="Queued" step="5" />
+					</results>
+				</action>
+			</actions>
+		</step>
+
+		<step id="5" name="结束流程" />
+	</steps>
+
+<!-- 	<splits> -->
+<!-- 		<split id="1" dynamic="TRUE" -->
+<!-- 			obtain-groups-callback="com.osworkflow.function.DynamicSplitGroup"> -->
+<!-- 			<unconditional-result old-status="Finished" status="Queued" step="2" /> -->
+<!-- 		</split> -->
+<!-- 	</splits> -->
+
+</workflow>
+

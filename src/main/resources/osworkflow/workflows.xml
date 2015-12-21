@@ -1,0 +1,10 @@
+<workflows>
+   <workflow name="dailyReport" type="resource" location="osworkflow/dailyReport.xml"/>
+   <workflow name="reimburse" type="resource" location="osworkflow/reimburse.xml"/>
+   <workflow name="trainingRequireGather" type="resource" location="osworkflow/trainingRequireGather.xml"/>
+   <workflow name="absentee" type="resource" location="osworkflow/absentee.xml"/>
+   <workflow name="internalTraining" type="resource" location="osworkflow/internalTraining.xml"/>
+   <workflow name="workflowDayoff" type="resource" location="osworkflow/workflowDayoff.xml"/>
+   <workflow name="workflowAway" type="resource" location="osworkflow/workflowAway.xml"/>
+    <workflow name="workflowOverTime" type="resource" location="osworkflow/workflowOverTime.xml"/>
+</workflows>

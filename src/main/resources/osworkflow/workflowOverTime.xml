@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE workflow PUBLIC "-//OpenSymphony Group//DTD OSWorkflow 2.8//EN" "http://www.opensymphony.com/osworkflow/workflow_2_8.dtd">
+<workflow>
+	<initial-actions>
+		<action id="10" name="开始">
+			<results>
+				<unconditional-result id="25" old-status="Finished" status="Underway" step="1" owner="${creater}" />
+			</results>
+		</action>
+	</initial-actions>
+
+	<steps>
+		<step id="1" name="提交加班单">
+			<actions>
+				<action id="11" name="提交审核">
+					<restrict-to>
+						<conditions type="AND">
+							<condition name="allow.owner.only" type="class">
+								<arg name="class.name">com.opensymphony.workflow.util.IsUserOwnerCondition</arg>
+							</condition>
+						</conditions>
+					</restrict-to>
+					<results>
+					
+					 <!-- 如果选择的产品经理，流向产品经理，否则交给部门经理审批 -->
+						<result id='101'  old-status="Finished" status="Queued" step="3" owner="${nextowner}">
+							<conditions type="AND">
+									<condition type="beanshell">
+										<arg name="script">
+											transientVars.get("leader")==null||transientVars.get("leader")==0
+										</arg>
+									</condition>
+								</conditions>
+						</result>
+					
+					
+						<unconditional-result id='102' old-status="Finished" status="Queued" step="2" owner="${leader}" />
+					</results>
+				</action>
+				<action id="12" name="办结">
+					<restrict-to>
+						<conditions type="AND">
+							<condition name="allow.owner.only" type="class">
+								<arg name="class.name">com.opensymphony.workflow.util.IsUserOwnerCondition</arg>
+							</condition>
+						</conditions>
+					</restrict-to>
+					<results>
+						<unconditional-result id='122' old-status="Finished" status="Queued" step="7" />
+					</results>
+				</action>
+			</actions>
+		</step>
+
+
+		<step id="2" name="产品经理审核">
+			<actions>
+				<action id="22" name="审批通过">
+					<restrict-to>
+						<conditions type="AND">
+							<condition name="allow.owner.only" type="class">
+								<arg name="class.name">com.opensymphony.workflow.util.IsUserOwnerCondition</arg>
+							</condition>
+						</conditions>
+					</restrict-to>
+					<results>
+						<unconditional-result id='201' old-status="Finished" status="Queued" step="3" owner="${nextowner}" />
+					</results>
+				</action>
+				
+				<action id="23" name="退回">
+					<restrict-to>
+						<conditions type="AND">
+							<condition name="allow.owner.only" type="class">
+								<arg name="class.name">com.opensymphony.workflow.util.IsUserOwnerCondition</arg>
+							</condition>
+						</conditions>
+					</restrict-to>
+					<results>
+						<unconditional-result id='202' old-status="Finished" status="Queued" step="1" owner="${creater}" />
+					</results>
+				</action>
+			</actions>
+		</step>
+		
+		<step id="3" name="部门主管审核" >
+			<actions>
+				<action id="31" name="审批通过">
+					<restrict-to>
+						<conditions type="AND">
+							<condition name="allow.owner.only" type="class">
+								<arg name="class.name">com.opensymphony.workflow.util.IsUserOwnerCondition</arg>
+							</condition>
+						</conditions>
+					</restrict-to>
+					<results>
+						<unconditional-result  id='302' old-status="Finished" status="Queued" step="6" owner="48" />
+					</results>
+				</action>
+				
+				<action id="32" name="退回">
+					<restrict-to>
+						<conditions type="AND">
+							<condition name="allow.owner.only" type="class">
+								<arg name="class.name">com.opensymphony.workflow.util.IsUserOwnerCondition</arg>
+							</condition>
+						</conditions>
+					</restrict-to>
+					<results>
+						<unconditional-result  id='303' old-status="Finished" status="Queued" step="1" owner="${creater}" />
+					</results>
+				</action>
+			</actions>
+		</step>
+		
+	
+		
+		<step id="6" name="人事处理" >
+			<actions>
+				<action id="61" name="考勤记录">
+					<restrict-to>
+						<conditions type="AND">
+							<condition name="allow.owner.only" type="class">
+								<arg name="class.name">com.opensymphony.workflow.util.IsUserOwnerCondition</arg>
+							</condition>
+						</conditions>
+					</restrict-to>
+					<results>
+						<unconditional-result id='604'  old-status="Finished" status="Queued" step="7" />
+					</results>
+				</action>
+				<action id="62" name="退回">
+					<restrict-to>
+						<conditions type="AND">
+							<condition name="allow.owner.only" type="class">
+								<arg name="class.name">com.opensymphony.workflow.util.IsUserOwnerCondition</arg>
+							</condition>
+						</conditions>
+					</restrict-to>
+					<results>
+						<unconditional-result id='605' old-status="Finished" status="Queued" step="1" owner="${creater}" />
+					</results>
+				</action>
+			</actions>
+		</step>
+		
+		<step id="7" name="结束流程"/>
+	</steps>
+</workflow>
+
